@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "762400422814",
+    "project_id": "profmb2c-1b482",
+    "storage_bucket": "profmb2c-1b482.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:762400422814:android:7d59b89ff05f05392eb48f",
+        "android_client_info": {
+          "package_name": "com.profmb2c"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDG72Pi53gliTa9xMDymm-YXKRum0JX8fk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
