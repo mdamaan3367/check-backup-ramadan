@@ -23,7 +23,7 @@ const windowHeight = Dimensions.get('window').height;
 const RegularCleaning = ({ route }) => {
   const [frameContainer12Visible, setFrameContainer12Visible] = useState(false);
   const navigation = useNavigation();
-  const { activities, deptCode,headToken } = route.params;
+  const { activities, deptCode,headToken,cat } = route.params;
   const openFrameContainer12 = useCallback(() => {
     setFrameContainer12Visible(true);
   }, []);
@@ -154,7 +154,19 @@ const handleActivityPress = (activityId) => {
       renderItem={({ item: childItem }) => (
         <View>
               <View style={{marginTop:15,margin:5,flexDirection:"row"}}>
-                <Text style={{color:"black",fontSize:15}}>{childItem.serviceShortDescAr}  </Text>
+              {cat === 'D' && (
+  <Text style={{color:"black",fontSize:15}}>
+    {childItem.serviceShortDescAr}
+  </Text>
+)}
+{cat === 'M' && (
+  <Text style={{color:"black",fontSize:15}}>
+    Monthly Subscription </Text>
+)}
+{cat === 'Y' && (
+  <Text style={{color:"black",fontSize:15}}>
+    One Year Subscription </Text>
+)}
                 <Text style={{color:"gray",fontSize:13,alignSelf:"center"}}>({item.actName})</Text>
                 <Text style={{color:"gray",fontSize:12,alignSelf:"center",marginLeft:"1.5%"}}>⭐ 4.9 (80 reviews)</Text>
               </View>
@@ -180,11 +192,11 @@ const handleActivityPress = (activityId) => {
                 <Text style={{color:"#006daa"}}>View Details</Text>
               </TouchableOpacity>
               <View style={{flex:1,flexDirection:"row",margin:5}}>
-                <Text style={{color:"red",fontSize:18,fontWeight:"bold"}}>{childItem.offerPrice} SAR </Text>   
-                <Text style={{color:"gray",alignSelf:"center",textDecorationLine: 'line-through',marginLeft:"1%"}}>{childItem.offerPrice * 1.1} SAR</Text>
+                <Text style={{color:"red",fontSize:18,fontWeight:"bold"}}>  {cat === 'D' && childItem.offerPrice + " SAR"} </Text>   
+                <Text style={{color:"gray",alignSelf:"center",textDecorationLine: 'line-through',marginLeft:"1%"}}> {cat === 'D' && childItem.offerPrice * 1.1 + " SAR"}</Text>
                 <Pressable
   style={[styles.nextWrapper, styles.wrapperFlexBox]}
-  onPress={() => navigation.navigate('PinYourLocation19N', { parentItem: item, childItem: childItem })}
+  onPress={() => navigation.navigate('PinYourLocation19N', { parentItem: item, childItem: childItem ,category:cat})}
 >
           <Text style={[styles.next, styles.nextTypo]}>Book Now</Text>
         </Pressable>

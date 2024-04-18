@@ -27,25 +27,29 @@ const Bottom = () => {
   return (
     <>
       <Bottom2.Navigator initialRouteName="Home">
-        <Bottom2.Screen
-          name="Home"
-          component={props => <Home />} // Pass openDrawer function to Home component
-          options={{
-            headerShown: false,
-            tabBarIcon: tabInfo => {
-              return (
-                <Image
-                  source={require('../assets/home2.png')}
-                  style={{
-                    width: 20,
-                    height: 20,
-                    tintColor: tabInfo.focused ? Color.praimary : 'grey',
-                  }}
-                />
-              );
-            },
+      <Bottom2.Screen
+  name="Home"
+  component={props => <Home {...props} />} // Pass openDrawer function to Home component
+  options={{
+    headerShown: false,
+    tabBarIcon: tabInfo => {
+      return (
+        <Image
+          source={require('../assets/home2.png')}
+          style={{
+            width: 24,
+            height: 24,
+            tintColor: tabInfo.focused ? Color.praimary : 'grey',
           }}
         />
+      );
+    },
+    tabBarLabel: ({ focused }) => (
+      <Text style={{ fontSize: focused ? 14 : 12 }}>Home</Text> // Adjust font size based on focus
+    ),
+  }}
+/>
+
         <Bottom2.Screen
           name="Bookings"
           component={Bookings}
@@ -56,13 +60,16 @@ const Bottom = () => {
                 <Image
                   source={require('../assets/calendartick.png')}
                   style={{
-                    width: 20,
-                    height: 20,
+                    width: 24,
+                    height: 24,
                     tintColor: tabInfo.focused ? Color.praimary : 'grey',
                   }}
                 />
               );
             },
+            tabBarLabel: ({ focused }) => (
+      <Text style={{ fontSize: focused ? 14 : 12 }}>Bookings</Text> // Adjust font size based on focus
+    ),
           }}
         />
         <Bottom2.Screen
@@ -75,13 +82,16 @@ const Bottom = () => {
                 <Image
                   source={require('../assets/user.png')}
                   style={{
-                    width: 20,
-                    height: 20,
+                    width: 24,
+                    height: 24,
                     tintColor: tabInfo.focused ? Color.praimary : 'grey',
                   }}
                 />
               );
             },
+            tabBarLabel: ({ focused }) => (
+      <Text style={{ fontSize: focused ? 14 : 12 }}>Profile</Text> // Adjust font size based on focus
+    ),
           }}
         />
         <Bottom2.Screen
@@ -94,13 +104,16 @@ const Bottom = () => {
                 <Image
                   source={require('../assets/textalignleft.png')}
                   style={{
-                    width: 20,
-                    height: 20,
+                    width: 24,
+                    height: 24,
                     tintColor: tabInfo.focused ? Color.praimary : 'grey',
                   }}
                 />
               );
             },
+            tabBarLabel: ({ focused }) => (
+      <Text style={{ fontSize: focused ? 14 : 12 }}>Menu</Text> // Adjust font size based on focus
+    ),
           }}
         />
       </Bottom2.Navigator>

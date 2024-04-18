@@ -16,11 +16,13 @@ import {useSelector} from 'react-redux';
 
 const YourAddressLocation51 = ({ route}) => {
   const userData1 = useSelector(selectUser);
+  const { selectedDateTimeArray, priceValue, day2, month2, year2 } = useSelector(state => state.contract);
+console.log(month2,"from reduxd date check")
   const { childItemId, childItemDeptCode, itemId } =useSelector(state => state.serviceType.selectedServiceType);
 
 console.log(itemId)
-  const { responseData, parentItem, childItem, selectedDate, currentLocation, currentAddress, showMap, selectedTime } = route.params;
-  console.log(childItem);
+  const { responseData, parentItem, childItem, selectedDate, currentLocation, currentAddress, showMap, selectedTime,category } = route.params;
+  console.log(responseData);
   const day = selectedDate.getDate(); // Get the day (1-31)
 const month = selectedDate.getMonth() + 1; // Get the month (0-11) and add 1 to make it 1-12
 const year = selectedDate.getFullYear();
@@ -36,7 +38,11 @@ console.log(`${day}-${month}-${year}`);
   const navigateHandle = () => {
     // Write your navigation logic here
     if(isPay){
-      handleButtonPress();
+      if (category === 'D') {
+        handleButtonPress(); // Call handleButtonPress if category is 'D'
+      } else {
+        handleContract(); // Call handleContract if category is not 'D'
+      }
     }else{
       Alert.alert("payement unSuccessful")
     }
@@ -45,12 +51,20 @@ console.log(`${day}-${month}-${year}`);
 
   const token = userData1.token; // Replace 'your_token_here' with the actual token
   const url = 'https://hvserp.com/FomMobB2C/api/FomMobJobTicketHead/createB2CJobTicketPayment';
+  const url2='https://hvserp.com/FomMobB2C/api/FomCustomerContract/createScheduleB2CJobTicketPayment';
   const method = 'POST';
   const requestData = {
     "response": "api response",
   "tokenNumber": "Token43434343434",
   "ticketNumber":responseData.message
   };
+  const requestData2 = {      
+    "response": "api response",
+    "tokenNumber": "tokenNumber5454545",  
+    "contractId":responseData,
+    "serviceType": "nooneday"
+  }
+
 
 
   
@@ -61,7 +75,7 @@ console.log(`${day}-${month}-${year}`);
       //........
       try {
         const response = await makeApiRequest(url, token, method, requestData);
-        console.log('API Response:', response);
+        console.log('API Response3:', response);
         navigation.navigate("YourAddressLocation61", {
           responseData: responseData,
           parentItem: parentItem,
@@ -79,7 +93,30 @@ console.log(`${day}-${month}-${year}`);
       
       //..........
       
-    } 
+    } ;
+
+    const handleContract=async () =>{
+
+      try {
+        const response = await makeApiRequest(url2, token, method, requestData2);
+        console.log('API Response2:', response);
+        navigation.navigate("YourAddressLocation61", {
+          responseData: responseData,
+          parentItem: parentItem,
+          childItem: childItem,
+          selectedDate: selectedDate, 
+          currentLocation: currentLocation,
+          currentAddress: currentAddress,
+          showMap: showMap,
+          selectedTime: selectedTime,
+          category:category
+        });
+      } catch (error) {
+        console.error('Error:', error);
+        Alert.alert("unable to raise ticket")
+      }
+
+    }
   
   
 
@@ -131,7 +168,7 @@ console.log(`${day}-${month}-${year}`);
           <View style={styles.regularCleaningParent}>
             <Text style={styles.oneTimeServiceTypo}>{parentItem.deptCode}</Text>
             <Text style={[styles.oneTimeService, styles.oneTimeServiceTypo]}>
-            {itemId.title}
+            {itemId.title} 
             </Text>
             <Text style={[styles.text, styles.textTypo]}>{childItem.minReqResource}</Text>
             <Text
@@ -151,6 +188,8 @@ console.log(`${day}-${month}-${year}`);
   propTextAlign="right"
   propWidth={"150%"}
   childItem={childItem}
+  category={category}
+
 />
       <CreditCardForm />
       <Property1Default

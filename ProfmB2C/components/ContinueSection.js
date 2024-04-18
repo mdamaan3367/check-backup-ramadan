@@ -5,9 +5,9 @@ import WebViewBottom from "./WebViewBottom";
 import Property1Default from "./Property1Default";
 import { FontSize, FontFamily, Border, Color } from "../GlobalStyles";
 
-const ContinueSection = ({  parentItem, childItem, selectedDate, address, showMap, currentLocation,currentAddress,selectedTime }) => {
+const ContinueSection = ({  parentItem, childItem, selectedDate, address, showMap, currentLocation,currentAddress,selectedTime ,category}) => {
   const navigation = useNavigation();
-  console.log(currentAddress)
+  console.log(category)
 
   return (
     <View style={styles.rectangleParent}>
@@ -36,7 +36,8 @@ const ContinueSection = ({  parentItem, childItem, selectedDate, address, showMa
   selectedDate: selectedDate,
   currentLocation: currentLocation,
   currentAddress: currentAddress,
-  selectedTime:selectedTime
+  selectedTime:selectedTime,
+  category:category
 })}
           >
             <View style={styles.groupGroup}>
@@ -83,7 +84,8 @@ const ContinueSection = ({  parentItem, childItem, selectedDate, address, showMa
   selectedDate: selectedDate,
   currentLocation: currentLocation,
   currentAddress: currentAddress,
-  selectedTime:selectedTime
+  selectedTime:selectedTime,
+  category:category
 })}
       disabled={!showMap}
       />

@@ -10,7 +10,7 @@ import MapView, { Marker } from 'react-native-maps';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 
 const SelectFromMap = ({ route }) => {
-  const { parentItem, childItem, selectedDate, currentLocation, currentAddress, showMap,selectedTime } = route.params;
+  const { parentItem, childItem, selectedDate, currentLocation, currentAddress, showMap,selectedTime,category } = route.params;
   const navigation = useNavigation();
   
   const windowHeight = Dimensions.get('window').height;

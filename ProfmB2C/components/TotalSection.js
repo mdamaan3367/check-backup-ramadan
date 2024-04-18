@@ -1,6 +1,7 @@
 import React, { useMemo } from "react";
 import { Text, StyleSheet, View } from "react-native";
 import { Color, FontFamily, FontSize, Border, Padding } from "../GlobalStyles";
+import {useSelector} from 'react-redux';
 
 const getStyleValue = (key, value) => {
   if (value === undefined) return;
@@ -12,8 +13,11 @@ const TotalSection = ({
   propLeft,
   propTextAlign,
   propWidth,
-  childItem
+  childItem,
+  category
 }) => {
+
+  const { selectedDateTimeArray, priceValue, day2, month2, year2 } = useSelector(state => state.contract);
   const frameView5Style = useMemo(() => {
     return {
       ...getStyleValue("top", propTop),
@@ -53,19 +57,19 @@ const TotalSection = ({
                   style={styles.cleaningFor2}
                 > ({(childItem.serviceShortDescAr )  })</Text>
               </Text>
-              <Text style={[styles.sar, styles.sarTypo, sARStyle]}>{childItem.offerPrice} SAR</Text>
+              <Text style={[styles.sar, styles.sarTypo, sARStyle]}>{category === 'D' ? childItem.offerPrice : priceValue} SAR</Text>
             </View>
             <View style={[styles.vat15Parent, frameView6Style]}>
               <Text style={[styles.vat15, styles.vat15Clr]}>
                 <Text style={styles.vatTypo}>VAT</Text>
                 <Text style={styles.text}>{` (15%) `}</Text>
               </Text>
-              <Text style={styles.sarTypo}>{childItem.offerPrice* 0.15} SAR</Text>
+              <Text style={styles.sarTypo}> {category === 'D' ? childItem.offerPrice * 0.15 : priceValue* 0.15}  SAR</Text>
             </View>
           </View>
           <View style={styles.totalParent}>
             <Text style={[styles.total, styles.sar2Typo]}>Total</Text>
-            <Text style={[styles.sar2, styles.sar2Typo]}>{childItem.offerPrice+childItem.offerPrice* 0.15} SAR</Text>
+            <Text style={[styles.sar2, styles.sar2Typo]}>{category === 'D' ? childItem.offerPrice + childItem.offerPrice * 0.15 : priceValue + priceValue * 0.15} SAR</Text>
           </View>
         </View>
         <View style={[styles.groupItem, styles.groupBorder]} />

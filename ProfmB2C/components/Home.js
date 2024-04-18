@@ -296,6 +296,7 @@ const Home = () => {
   const [monthlyDepartments, setMonthlyDepartments] = useState([]);
   const [yearlyDepartments, setYearlyDepartments] = useState([]);
   const [shouldRefetchData, setShouldRefetchData] = useState(false);
+  const [category, setCategory] = useState(null);
 
   const naviClean = () => {
     navigation.navigate('OneTimeService');
@@ -371,24 +372,27 @@ const Home = () => {
   
    // Trigger the effect when the token changes
 
-
+console.log(category)
 
    const handlePress = (itemId) => {
     switch (itemId) {
       case 1:
         setExpanded(!expanded);
         console.log("one time");
-        setShouldRefetchData(true); // Set the flag to trigger data refetch
+        setShouldRefetchData(true);
+        setCategory('D') // Set the flag to trigger data refetch
         break;
       case 3:
         setExpanded2(!expanded2);
         console.log("month time");
-        setShouldRefetchData(true); // Set the flag to trigger data refetch
+        setShouldRefetchData(true);
+        setCategory('M') // Set the flag to trigger data refetch
         break;
       case 4:
         setExpanded3(!expanded3);
         console.log("year time");
-        setShouldRefetchData(true); // Set the flag to trigger data refetch
+        setShouldRefetchData(true);
+        setCategory('Y') // Set the flag to trigger data refetch
         break;
       default:
         break;
@@ -414,7 +418,7 @@ const Home = () => {
       const url = 'https://hvserp.com/FomMobB2C/api/FomMobB2CService/getActivitiesByDepartmentList?deptCode='+deptCode;
       const activities = await makeApiRequest(url, headToken, 'GET');
       
-      navigation.navigate('RegularCleaning', { activities: activities, deptCode: deptCode,headToken:headToken });
+      navigation.navigate('RegularCleaning', { activities: activities, deptCode: deptCode,headToken:headToken ,cat:category});
       
 
     } catch (error) {

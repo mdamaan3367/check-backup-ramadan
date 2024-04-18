@@ -4,11 +4,13 @@ import { useNavigation } from "@react-navigation/native";
 import Property1Default from "../components/Property1Default";
 import WebViewBottom from "../components/WebViewBottom";
 import { Color, FontSize, FontFamily } from "../GlobalStyles";
+import {useSelector} from 'react-redux';
 
 const YourAddressLocation61 = ({ route}) => {
+  const { selectedDateTimeArray, priceValue, day2, month2, year2 } = useSelector(state => state.contract);
   const navigation = useNavigation();
-  const { responseData, parentItem, childItem, selectedDate, currentLocation, currentAddress, showMap, selectedTime } = route.params;
-  console.log(childItem)
+  const { responseData, parentItem, childItem, selectedDate, currentLocation, currentAddress, showMap, selectedTime,category } = route.params;
+  console.log(category)
   const windowHeight = Dimensions.get('window').height;
   const windowWidth = Dimensions.get('window').width;
 
@@ -36,9 +38,9 @@ const YourAddressLocation61 = ({ route}) => {
             style={[styles.youvePaid91Container, styles.messageToWorkersTypo]}
           >
             <Text style={styles.youvePaid91Container1}>
-              <Text style={styles.youvePaidTypo}>You’ve paid</Text>
+              <Text style={styles.youvePaidTypo}>You’ve Paid</Text>
               <Text style={styles.textTypo}>{` `}</Text>
-              <Text style={styles.text1}>{childItem.offerPrice+childItem.offerPrice* 0.15}</Text>
+              <Text style={styles.text1}>{category === 'D' ? childItem.offerPrice + childItem.offerPrice * 0.15 : priceValue + priceValue * 0.15}</Text>
               <Text style={styles.textTypo}>{` `}</Text>
               <Text style={styles.youvePaidTypo}>SAR</Text>
             </Text>
@@ -172,7 +174,6 @@ const styles = StyleSheet.create({
     marginTop: 12,
     width:"100%",
     color: Color.whait,
-    textTransform: "capitalize",
     lineHeight: 30,
     marginLeft:"4%"
   },

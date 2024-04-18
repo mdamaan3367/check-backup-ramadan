@@ -8,8 +8,8 @@ import MapView, { Marker } from 'react-native-maps';
 import GetLocation from 'react-native-get-location';
 
 const YourAddressLocation111N = ({ route }) => {
-  const { parentItem, childItem, selectedDate,selectedTime } = route.params;
-  console.log(selectedTime)
+  const { parentItem, childItem, selectedDate,selectedTime,category } = route.params;
+  console.log(category,"cate")
   
   const windowHeight = Dimensions.get('window').height;
   const windowWidth = Dimensions.get('window').width;
@@ -109,6 +109,7 @@ const YourAddressLocation111N = ({ route }) => {
   currentLocation={currentLocation}
   currentAddress={currentAddress}
   selectedTime={selectedTime}
+  category={category}
 
 />
 

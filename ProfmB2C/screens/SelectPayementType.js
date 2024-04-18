@@ -17,12 +17,14 @@ import {useSelector} from 'react-redux';
 
 const SelectPayementType = ({ route }) => {
   const userData1 = useSelector(selectUser);
-  const { parentItem, childItem, selectedDate, currentLocation, currentAddress, showMap,selectedTime } = route.params;
+  const { selectedDateTimeArray, priceValue, day2, month2, year2 } = useSelector(state => state.contract);
+  console.log(month2,day2,year2,"from reduxd date check")
+  const { parentItem, childItem, selectedDate, currentLocation, currentAddress, showMap,selectedTime,category } = route.params;
   const windowHeight = Dimensions.get('window').height;
   const windowWidth = Dimensions.get('window').width;
   const navigation = useNavigation();
   const [checked, setChecked] = useState(false);
-  console.log(selectedTime);
+  console.log(userData1);
   const lat=currentLocation.latitude;
   const long=currentLocation.longitude;
 
@@ -44,6 +46,7 @@ console.log(time24Format); // Output: "12:33"
 
   const token = userData1.token; // Replace 'your_token_here' with the actual token
   const url = 'https://hvserp.com/FomMobB2C/api/FomMobJobTicketHead/createUpdateB2CJobTicket';
+  const url2='https://hvserp.com/FomMobB2C/api/FomCustomerContract';
   const method = 'POST';
   const requestData = {
     "id": 0,
@@ -69,11 +72,79 @@ console.log(time24Format); // Output: "12:33"
   "timeValue":time24Format
   };
 
+  const formattedDate2 = `${year2}-${month2.toString().padStart(2, '0')}-${day2.toString().padStart(2, '0')}`;
+
+  const tableRows = selectedDateTimeArray.map(({ day, time }) => {
+    let weekday;
+    switch (day) {
+      case "Sunday":
+        weekday = "Sunday";
+        break;
+      case "Monday":
+        weekday = "Monday";
+        break;
+      case "Tuesday":
+        weekday = "Tuesday";
+        break;
+      case "Wednesday":
+        weekday = "Wednesday";
+        break;
+      case "Thursday":
+        weekday = "Thursday";
+        break;
+      case "Friday":
+        weekday = "Friday";
+        break;
+      case "Saturday":
+        weekday = "Saturday";
+        break;
+      default:
+        weekday = "";
+    }
+
+    const [startTime] = time.split(' ');
+  
+    return {
+      "weekDay": weekday,
+      "time": startTime,
+      "remarks": `${startTime} is the start of work`,
+      "isActive": true
+    };
+  });
+
+console.log(tableRows)
+  const requestData2 ={
+    "customerContractDto": {    
+      "custCode": userData1.userName,    
+      "custContNumber":userData1.mobile,
+      "contStartDate": selectedDate,
+      "contEndDate":formattedDate2,   
+       "remarks": "this is adding scheduling for customer and creating jobticket"
+        },
+    "scheduleSummaryDto": {
+      "deptCode": childItem.deptCode,
+      "tableRows": tableRows
+    },
+    "geoLatitude": lat,
+    "geoLongitude": long
+  }
+
+
+
 
   const toggleCheckbox = () => {
     setChecked(!checked);
   };
 
+
+  const handleOnButtonBigPress = () => {
+    if (category === 'D') {
+      handleButtonPress();
+     
+    } else {
+      handleContract();
+    }
+  };
 
   const handleButtonPress = async () => {
     if (checked) {
@@ -90,7 +161,8 @@ console.log(time24Format); // Output: "12:33"
           currentLocation: currentLocation,
           currentAddress: currentAddress,
           showMap: showMap,
-          selectedTime: selectedTime
+          selectedTime: selectedTime,
+          category:category
         });
       } catch (error) {
         console.error('Error:', error);
@@ -105,7 +177,39 @@ console.log(time24Format); // Output: "12:33"
       Alert.alert("Checkbox is not checked");
     }
   };
+  
 
+  const handleContract = async () => {
+    if (checked) {
+     
+      //........
+      try {
+        const response = await makeApiRequest(url2, token, method, requestData2);
+        console.log('API Response:', response);
+        navigation.navigate("YourAddressLocation51", {
+          responseData: response,
+          parentItem: parentItem,
+          childItem: childItem,
+          selectedDate: selectedDate,
+          currentLocation: currentLocation,
+          currentAddress: currentAddress,
+          showMap: showMap,
+          selectedTime: selectedTime,
+          category:category
+        });
+      } catch (error) {
+        console.error('Error:', error);
+        Alert.alert("unable to raise ticket")
+      }
+      
+      //..........
+      
+    } else {
+      // Handle case when checkbox is not checked
+      // You can show an alert or perform other actions
+      Alert.alert("Checkbox is not checked");
+    }
+  };
   
  
 
@@ -153,7 +257,7 @@ console.log(time24Format); // Output: "12:33"
         logInTextTransform="capitalize"
         logInWidth="58.31%"
         logInLeft="20.7%"
-        onButtonBigPress={handleButtonPress}
+        onButtonBigPress={handleOnButtonBigPress}
         disabled={!checked}
       />
       </View>

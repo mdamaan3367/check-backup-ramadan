@@ -6,7 +6,8 @@ import notificationReducer from './notificationSlice';
 import dataReducer from './dataSlice';
 import itemReducer from './itemSlice';
 import userReducer from './userSlice';
-import serviceTypeReducer from './serviceTypeSlice'; // Import the serviceTypeReducer from your serviceTypeSlice
+import serviceTypeReducer from './serviceTypeSlice';
+import contractReducer from './contractSlice'; // Import the contractReducer from your contractSlice
 
 // Combine reducers
 const rootReducer = combineReducers({
@@ -14,7 +15,8 @@ const rootReducer = combineReducers({
   data: dataReducer,
   items: itemReducer,
   user: userReducer,
-  serviceType: serviceTypeReducer, // Include serviceTypeReducer in the root reducer
+  serviceType: serviceTypeReducer,
+  contract: contractReducer, // Include contractReducer in the root reducer
 });
 
 // Configure persist options
