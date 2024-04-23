@@ -8,7 +8,7 @@ import { FontFamily, Color, FontSize, Border, Padding } from "../GlobalStyles";
 
 const YourAddressLocation121 = ({ route}) => {
   const navigation = useNavigation();
-  const { responseData, parentItem, childItem, selectedDate, currentLocation, currentAddress, showMap, selectedTime } = route.params;
+  const { responseData, parentItem, childItem, selectedDate, currentLocation, currentAddress, showMap, selectedTime, } = route.params;
 
 console.log(selectedTime)
   return (

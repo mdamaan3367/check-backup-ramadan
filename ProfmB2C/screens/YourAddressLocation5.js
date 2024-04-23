@@ -84,7 +84,8 @@ console.log(`${day}-${month}-${year}`);
           currentLocation: currentLocation,
           currentAddress: currentAddress,
           showMap: showMap,
-          selectedTime: selectedTime
+          selectedTime: selectedTime,
+          category:category
         });
       } catch (error) {
         console.error('Error:', error);
@@ -118,7 +119,7 @@ console.log(`${day}-${month}-${year}`);
 
     }
   
-  
+  console.log(category)
 
   return (
     <ScrollView>

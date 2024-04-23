@@ -19,7 +19,6 @@ const ContinueSection = ({  parentItem, childItem, selectedDate, address, showMa
         <Text style={styles.locationDetails}>Location Details</Text>
       </View>
       <View style={[styles.homeIndicator, styles.homeIndicatorPosition]} />
-      <View style={styles.groupItem} />
       <View style={styles.groupParent}>
         <View style={styles.currentAddressWrapper}>
           <Text style={[styles.currentAddress, styles.currentAddressTypo]}>
@@ -154,11 +153,11 @@ const styles = StyleSheet.create({
     height: 17,
   },
   homeIndicator: {
-    top:"-5%",
-    marginLeft:"5%",
+    top:"-2%",
+    marginLeft:"6%",
     borderRadius: Border.br_81xl,
     backgroundColor: Color.a6A6A6,
-    width: 51,
+    width: "13%",
     height: 5,
   },
   groupItem: {
@@ -169,7 +168,7 @@ const styles = StyleSheet.create({
     height: 0,
     width: "100%",
     left: 0,
-    position: "absolute",
+    position: "relative",
   },
   currentAddress: {
     color: Color.colorBlack,
@@ -241,9 +240,9 @@ const styles = StyleSheet.create({
     position: "absolute",
   },
   rectangleParent: {
-    top: "67%",
+    top: "5%",
     width: "100%",
-    height: 270,
+    height:"100%",
     left: "0%",
     position: "absolute",
   },

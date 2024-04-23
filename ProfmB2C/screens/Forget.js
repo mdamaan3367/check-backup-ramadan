@@ -1,78 +1,77 @@
-import React, { useState } from 'react';
-import { View, Modal, Text, TouchableOpacity, StyleSheet,Image } from 'react-native';
+import React, { useState, useEffect, useRef } from 'react';
+import { TextInput, View, StyleSheet } from 'react-native';
+import * as Animatable from 'react-native-animatable';
 
-const OutlinedButton = ({ title, isSelected, onPress }) => {
-  return (
-    <TouchableOpacity
-      style={[styles.button, isSelected && styles.selectedButton]}
-      onPress={onPress}
-    >
-      <Text style={[styles.buttonText, isSelected && styles.selectedButtonText]}>
-        {title}
-      </Text>
-    </TouchableOpacity>
-  );
-};
+const PlaceholderAnimationTextInput = () => {
+  const [placeholder, setPlaceholder] = useState('');
+  const [typing, setTyping] = useState(false);
+  const [text, setText] = useState('');
+  const placeholderRef = useRef();
+  const animationIntervalRef = useRef(null);
+  const animationTimeoutRef = useRef(null);
 
-const BottomModal = () => {
-  const [modalVisible, setModalVisible] = useState(false);
-  const [selectedButton, setSelectedButton] = useState('a');
+  useEffect(() => {
+    if (!typing && !text) {
+      animatePlaceholder();
+    }
 
-  const openModal = () => {
-    setModalVisible(true);
+    return () => {
+      clearInterval(animationIntervalRef.current);
+      clearTimeout(animationTimeoutRef.current);
+    };
+  }, [typing, text]);
+
+  const animatePlaceholder = () => {
+    const text = "Search what you need";
+    let i = 0;
+    animationIntervalRef.current = setInterval(() => {
+      setPlaceholder((prevPlaceholder) => prevPlaceholder + text[i]);
+      i++;
+      if (i === text.length) {
+        clearInterval(animationIntervalRef.current);
+        animationTimeoutRef.current = setTimeout(resetPlaceholder, 1000);
+      }
+    }, 100);
   };
 
-  const closeModal = () => {
-    setModalVisible(false);
+  const resetPlaceholder = () => {
+    if (placeholderRef.current) {
+      const text = placeholderRef.current.props.text;
+      let i = text.length - 1;
+      animationIntervalRef.current = setInterval(() => {
+        setPlaceholder((prevPlaceholder) => prevPlaceholder.slice(0, -1));
+        i--;
+        if (i === -1) {
+          clearInterval(animationIntervalRef.current);
+          animatePlaceholder();
+        }
+      }, 100);
+    }
   };
 
-  const handleButtonPress = (button) => {
-    setSelectedButton(button);
-    // You can update the state or perform any other actions here
-    console.log("Selected Button:", button);
+  const onChangeText = (text) => {
+    setTyping(text.length > 0);
+    setText(text);
   };
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity style={styles.button} onPress={openModal}>
-        <Text style={styles.buttonText}>Open Modal</Text>
-      </TouchableOpacity>
-
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={closeModal}
-      >
-        <View style={styles.modalContainer}>
-          <View style={styles.modalContent}>
-          <View style={{flexDirection:"row",padding:1}}>
-            <Text>Wednesday,17 january2024                                    </Text>
-            <Image
-                style={{height:16,width:16}}
-                resizeMode="cover"
-                source={require("../assets/receiptedit1.png")}
-              />
-            </View>
-            <Text style={{paddingBottom:25}}>Choose your visit time</Text>
-            <View style={styles.buttonContainer}>
-              <OutlinedButton
-                title="Button A"
-                isSelected={selectedButton === 'a'}
-                onPress={() => handleButtonPress('a')}
-              />
-              <OutlinedButton
-                title="Button B"
-                isSelected={selectedButton === 'b'}
-                onPress={() => handleButtonPress('b')}
-              />
-            </View>
-            <TouchableOpacity onPress={closeModal}>
-              <Text style={styles.closeButton}>Close</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </Modal>
+      <Animatable.Text
+        ref={placeholderRef}
+        animation={typing || text ? null : "fadeIn"}
+        iterationCount="infinite"
+        duration={1500}
+        style={styles.placeholder}
+        text={placeholder}
+      />
+      <TextInput
+        placeholder={typing || text ? '' : placeholder}
+        placeholderTextColor="#D3D3D3"
+        maxLength={40}
+        style={styles.input}
+        onChangeText={onChangeText}
+        value={text}
+      />
     </View>
   );
 };
@@ -82,58 +81,16 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: '#fff',
   },
-  buttonM: {
-    backgroundColor: 'white',
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 5,
+  input: {
+    color: '#006daa',
+    padding: 10,
+    marginTop: '2%',
   },
-  buttonTextM: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#333333',
-  },
-  modalContainerM: {
-    flex: 1,
-    justifyContent: 'flex-end',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-  },
-  modalContentM: {
-    backgroundColor: '#FFFFFF',
-    padding: 20,
-    borderTopLeftRadius: 10,
-    borderTopRightRadius: 10,
-    width: '100%',
-  },
-  buttonContainerM: { 
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 10,
-  },
-  buttonM: {                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
-    borderWidth: 1,
-    backgroundColor: 'white',
-    paddingVertical: 10,
-    paddingHorizontal: 20,                                                                                                                                                           
-    borderRadius: 5,
-  },
-  buttonTextM: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#333333',
-  },
-  selectedButtonM: {
-  },
-  selectedButtonTextM: {
-    color: 'blue',
-  },
-  closeButtonM: {
-    marginTop: 10,
-    color: 'blue',
-    textAlign: 'center',
+  placeholder: {
+    color: '#D3D3D3',
   },
 });
 
-export default BottomModal;
+export default PlaceholderAnimationTextInput;

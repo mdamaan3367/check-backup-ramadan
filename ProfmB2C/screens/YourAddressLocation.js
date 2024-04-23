@@ -11,7 +11,7 @@ import {useSelector} from 'react-redux';
 const YourAddressLocation12 = ({ route}) => {
   const { childItemId, childItemDeptCode, itemId } =useSelector(state => state.serviceType.selectedServiceType);
 
-  const { responseData, parentItem, childItem, selectedDate, currentLocation, currentAddress, showMap, selectedTime } = route.params;
+  const { responseData, parentItem, childItem, selectedDate, currentLocation, currentAddress, showMap, selectedTime,category } = route.params;
   const day = selectedDate.getDate(); // Get the day (1-31)
 const month = selectedDate.getMonth() + 1; // Get the month (0-11) and add 1 to make it 1-12
 const year = selectedDate.getFullYear();
@@ -85,7 +85,9 @@ const year = selectedDate.getFullYear();
   propLeft={"145%"}
   propTextAlign="right"
   propWidth={"150%"}
-   childItem={childItem} />
+   childItem={childItem}
+   category={category}
+    />
       <Property1Default
         logIn="Back to home"
         property1DefaultPosition="absolute"

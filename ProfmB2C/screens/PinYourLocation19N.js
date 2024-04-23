@@ -25,6 +25,7 @@ import { makeApiRequest } from '../Utils/WebServer';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectUser } from '../redux/userSlice';
 import { updateSelectedDateTimeArray, updatePriceValue, updateDay2, updateMonth2, updateYear2 } from '../redux/contractSlice';
+import { Picker } from '@react-native-community/picker';
 
 
 
@@ -182,19 +183,59 @@ const PinYourLocation19N = ({route}) => {
     setSelectedTime(currentDate);
   };
 
-  const increaseTime = () => {
-    const newTime = new Date(selectedTime.getTime() + 60000); // Adding one minute
-    setSelectedTime(newTime);
+  const [selectedHour, setSelectedHour] = useState(0);
+  const [selectedMinute, setSelectedMinute] = useState(0);
+  // State for toggling between selecting hours and minutes
+  const [isSelectingHours, setIsSelectingHours] = useState(true);
+
+  // Function to increment hours or minutes based on the current mode
+  const incrementTime = () => {
+    if (isSelectingHours) {
+      setSelectedHour((prevHour) => {
+        const newHour = (prevHour + 1) % 24; // Increment hour and loop back to 0 after 23
+        return newHour === 0 ? 12 : newHour; // Convert 0 to 12 for 12-hour format
+      });
+    } else {
+      setSelectedMinute((prevMinute) => (prevMinute + 1) % 60); // Increment minute and loop back to 0 after 59
+    }
+  };
+  
+  const decrementTime = () => {
+    if (isSelectingHours) {
+      setSelectedHour((prevHour) => {
+        const newHour = (prevHour - 1 + 24) % 24; // Decrement hour and loop back to 23 after 0
+        return newHour === 0 ? 12 : newHour; // Convert 0 to 12 for 12-hour format
+      });
+    } else {
+      setSelectedMinute((prevMinute) => (prevMinute - 1 + 60) % 60); // Decrement minute and loop back to 59 after 0
+    }
+  };
+  // Format hour in 12-hour format
+  const format12Hour = (hour) => {
+    const adjustedHour = hour % 12 || 12;
+    return adjustedHour.toString().padStart(2, '0');
   };
 
-  const decreaseTime = () => {
-    const newTime = new Date(selectedTime.getTime() - 60000); // Subtracting one minute
-    setSelectedTime(newTime);
-  };
+  useEffect(() => {
+    const currentDate = new Date();
+    setSelectedHour(currentDate.getHours());
+    setSelectedMinute(currentDate.getMinutes());
+  }, []);
 
-  const format12Hour = hours => {
-    return hours % 12 || 12;
+  useEffect(() => {
+    const formattedTime = formatSelectedTime();
+    console.log(formattedTime,"timnig check");
+    setSelectedTime(formattedTime);
+  }, [selectedHour, selectedMinute]);
+  
+  const formatSelectedTime = () => {
+    const formattedHour = selectedHour % 12 || 12;
+    const formattedMinute = selectedMinute.toString().padStart(2, '0');
+    const period = selectedHour >= 12 ? 'PM' : 'AM';
+    return `${formattedHour}:${formattedMinute} ${period}`;
   };
+  
+
 
   const frameParentStyle = category === 'D' ? {top: '26%'} : {top: '40%'};
 
@@ -263,6 +304,8 @@ console.log(priceValue);
   dispatch(updateDay2(day2));
   dispatch(updateMonth2(month2));
   dispatch(updateYear2(year2));
+
+  
 
   return (
     <>
@@ -449,22 +492,26 @@ console.log(priceValue);
                     <Text style={styles.startTime}>start time</Text>
                     <View
                       style={[styles.addCircleParent, styles.parentFlexBox]}>
-                      <TouchableOpacity onPress={increaseTime}>
+                      <TouchableOpacity onPress={incrementTime}>
                         <Image
                           style={styles.iconLayout}
                           resizeMode="cover"
                           source={require('../assets/addcircle.png')}
                         />
                       </TouchableOpacity>
-                      <Text style={[styles.am, styles.amTypo]}>{`${format12Hour(
-                        selectedTime.getHours(),
-                      )}:${selectedTime
-                        .getMinutes()
-                        .toString()
-                        .padStart(2, '0')} ${
-                        selectedTime.getHours() >= 12 ? 'PM' : 'AM'
-                      }`}</Text>
-                      <TouchableOpacity onPress={decreaseTime}>
+                      <View style={[styles.am, styles.amTypo]}> 
+                      <TouchableOpacity onPress={() => setIsSelectingHours(true)}>
+                      <Text style={{color:"black",fontSize:16}}>
+                      {`${format12Hour(selectedHour)}:`}
+                      </Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity onPress={() => setIsSelectingHours(false)}>
+                      <Text style={{color:"black",fontSize:16}}>
+                      {`${selectedMinute.toString().padStart(2, '0')}`}
+                      </Text>
+                      </TouchableOpacity>
+                      </View>
+                      <TouchableOpacity onPress={decrementTime}>
                         <Image
                           style={[styles.minusCirlceIcon, styles.iconLayout]}
                           resizeMode="cover"
@@ -605,11 +652,7 @@ console.log(priceValue);
           childItem,
           category,
           selectedDate,
-          selectedTime: `${format12Hour(
-            selectedTime.getHours(),
-          )}:${selectedTime.getMinutes().toString().padStart(2, '0')} ${
-            selectedTime.getHours() >= 12 ? 'PM' : 'AM'
-          }`,
+          selectedTime: selectedTime,
         })
       }
     />
@@ -636,10 +679,11 @@ console.log(priceValue);
 
 const styles = StyleSheet.create({
   selectedButton2: {
-    borderColor: Color.praimary, // Change border color to blue when selected
+    backgroundColor:Color.praimary
+   // Change border color to blue when selected
   },
   selectedText2: {
-    color:  Color.praimary, // Change text color to blue when selected
+    color:  "white", // Change text color to blue when selected
   },
   
   modalOverlay: {
@@ -682,7 +726,7 @@ const styles = StyleSheet.create({
     margin: 5,
   },
   selectedButton: {
-    
+    backgroundColor: Color.praimary,
     borderColor:  Color.praimary,
   },
   buttonText: {
@@ -696,10 +740,11 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   selectedButtonText: {
-    color: Color.praimary,
+    color:"white",
+
   },
   selectedButtonText2: {
-    color: Color.praimary,
+    color: "white",
   },
   rectangleLayout: {
     height: 124,
@@ -906,11 +951,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   amTypo: {
-    height: 16,
+    height: 19,
     alignItems: 'center',
     display: 'flex',
     fontFamily: FontFamily.dGBaysan,
     fontWeight: '600',
+    flexDirection:"row"
   },
   iconLayout: {
     height: 20,

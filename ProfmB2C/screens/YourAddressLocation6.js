@@ -10,7 +10,7 @@ const YourAddressLocation61 = ({ route}) => {
   const { selectedDateTimeArray, priceValue, day2, month2, year2 } = useSelector(state => state.contract);
   const navigation = useNavigation();
   const { responseData, parentItem, childItem, selectedDate, currentLocation, currentAddress, showMap, selectedTime,category } = route.params;
-  console.log(category)
+  console.log(category,"from lottie")
   const windowHeight = Dimensions.get('window').height;
   const windowWidth = Dimensions.get('window').width;
 
@@ -102,7 +102,8 @@ const YourAddressLocation61 = ({ route}) => {
   currentLocation: currentLocation,
   currentAddress: currentAddress,
   showMap: showMap,
-  selectedTime: selectedTime
+  selectedTime: selectedTime,
+  category:category
 })}
         
       />

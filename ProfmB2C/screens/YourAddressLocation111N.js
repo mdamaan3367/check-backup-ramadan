@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, Text, Image, Pressable, ScrollView, Dimensions } from "react-native";
+import React, { useState, useEffect, useRef } from 'react';
+import { StyleSheet, View, Text, Image, Pressable, ScrollView, Dimensions,PanResponder, Animated } from "react-native";
 import LocationForm from "../components/LocationForm";
 import ContinueSection from "../components/ContinueSection";
 import { useNavigation } from "@react-navigation/native";
@@ -8,6 +8,8 @@ import MapView, { Marker } from 'react-native-maps';
 import GetLocation from 'react-native-get-location';
 
 const YourAddressLocation111N = ({ route }) => {
+
+  
   const { parentItem, childItem, selectedDate,selectedTime,category } = route.params;
   console.log(category,"cate")
   
@@ -62,12 +64,35 @@ const YourAddressLocation111N = ({ route }) => {
       return "Error fetching address";
     }
   };
-  
+  console.log(selectedTime,"mymaptime");
+
+
+
+  const INITIAL_CONTAINER_HEIGHT = windowHeight*0.41;
+const MAX_CONTAINER_HEIGHT = windowHeight * 0.56;
+  const [containerHeight, setContainerHeight] = useState(INITIAL_CONTAINER_HEIGHT);
+  const pan = useRef(new Animated.ValueXY()).current;
+
+  const onPanResponderMove = (_, gestureState) => {
+    const newHeight = Math.min(
+      MAX_CONTAINER_HEIGHT,
+      Math.max(INITIAL_CONTAINER_HEIGHT, containerHeight - gestureState.dy)
+    );
+    setContainerHeight(newHeight);
+  };
+
+  const panResponder = PanResponder.create({
+    onStartShouldSetPanResponder: () => true,
+    onPanResponderMove,
+    onPanResponderRelease: () => {
+      // Do nothing, keep the current height
+    },
+  });
 
 
   return (
   <>
-  <ScrollView>
+  <ScrollView scrollEnabled={false}>
     <View style={[styles.yourAddressLocation, styles.iconLayout,{height:windowHeight+100,width:windowWidth}]}>
       <View
         style={[
@@ -100,7 +125,24 @@ const YourAddressLocation111N = ({ route }) => {
         )}
       
       </View>
-      <ContinueSection
+      {/* <ContinueSection
+  parentItem={parentItem}
+  childItem={childItem}
+  selectedDate={selectedDate}
+  address={currentAddress}
+  showMap={!!currentLocation} // Convert currentLocation to a boolean
+  currentLocation={currentLocation}
+  currentAddress={currentAddress}
+  selectedTime={selectedTime}
+  category={category}
+
+/> */}
+
+<Animated.View
+        style={[styles.bottomContainer, { height: containerHeight }]}
+        {...panResponder.panHandlers}
+      >
+       <ContinueSection
   parentItem={parentItem}
   childItem={childItem}
   selectedDate={selectedDate}
@@ -112,6 +154,8 @@ const YourAddressLocation111N = ({ route }) => {
   category={category}
 
 />
+        {/* Container content goes here */}
+      </Animated.View>
 
 
      
@@ -138,6 +182,20 @@ const YourAddressLocation111N = ({ route }) => {
 };
 
 const styles = StyleSheet.create({
+  bottomContainer: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    backgroundColor: 'white',
+    borderTopLeftRadius: 16,
+    borderTopRightRadius: 16,
+    padding: 0,
+    backgroundColor:"white",
+    elevation:5,
+   
+    
+  },
   iconLayout: {
     overflow: "hidden",
   },
@@ -147,7 +205,7 @@ const styles = StyleSheet.create({
   },
   map: {
     width: '100%',
-    height: 300,
+    height: "39%",
   },
   basemapImageIconPosition: {
     width: "100%",

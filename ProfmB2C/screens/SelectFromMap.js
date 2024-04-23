@@ -176,7 +176,8 @@ const SelectFromMap = ({ route }) => {
             selectedDate: selectedDate,
             currentLocation: selectedLocation,
             currentAddress: fetchedAddress,
-            selectedTime:selectedTime
+            selectedTime:selectedTime,
+            category:category
           })}
         />
         <LocationPickerForm />

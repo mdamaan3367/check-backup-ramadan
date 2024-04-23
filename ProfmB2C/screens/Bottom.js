@@ -45,7 +45,7 @@ const Bottom = () => {
       );
     },
     tabBarLabel: ({ focused }) => (
-      <Text style={{ fontSize: focused ? 14 : 12 }}>Home</Text> // Adjust font size based on focus
+      <Text style={{ fontSize: focused ? 14 : 12, color: focused ?  Color.praimary : 'grey' }}>Home</Text> // Adjust font size based on focus
     ),
   }}
 />
@@ -68,7 +68,7 @@ const Bottom = () => {
               );
             },
             tabBarLabel: ({ focused }) => (
-      <Text style={{ fontSize: focused ? 14 : 12 }}>Bookings</Text> // Adjust font size based on focus
+              <Text style={{ fontSize: focused ? 14 : 12, color: focused ?  Color.praimary : 'grey' }}>Bookings</Text> // Adjust font size based on focus
     ),
           }}
         />
@@ -90,7 +90,7 @@ const Bottom = () => {
               );
             },
             tabBarLabel: ({ focused }) => (
-      <Text style={{ fontSize: focused ? 14 : 12 }}>Profile</Text> // Adjust font size based on focus
+              <Text style={{ fontSize: focused ? 14 : 12, color: focused ?  Color.praimary : 'grey' }}>Profile</Text> // Adjust font size based on focus
     ),
           }}
         />
@@ -112,7 +112,7 @@ const Bottom = () => {
               );
             },
             tabBarLabel: ({ focused }) => (
-      <Text style={{ fontSize: focused ? 14 : 12 }}>Menu</Text> // Adjust font size based on focus
+              <Text style={{ fontSize: focused ? 14 : 12, color: focused ?  Color.praimary : 'grey' }}>Menu</Text> // Adjust font size based on focus
     ),
           }}
         />
