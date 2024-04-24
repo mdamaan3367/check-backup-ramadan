@@ -1,61 +1,74 @@
-import React, { useEffect } from 'react';
-import {
-  View,
-  Button,
-  Platform,
-  ToastAndroid,
-} from 'react-native';
-import { check, request, PERMISSIONS, RESULTS } from 'react-native-permissions';
+import React, { useEffect, useState } from 'react';
+import { View, Text, Button, Modal, Platform, Linking, Alert } from 'react-native';
+import Geolocation from '@react-native-community/geolocation';
+import Permissions from 'react-native-permissions';
 
-const App = () => {
-  const requestReadMediaPermission = async () => {
-    try {
-      let permission;
-      if (Platform.Version >= 30) {
-        permission = PERMISSIONS.ANDROID.READ_EXTERNAL_STORAGE;
-      } else if (Platform.Version >= 11 && Platform.Version < 30) {
-        permission = PERMISSIONS.ANDROID.READ_MEDIA_IMAGES;
-      } else {
-        permission = PERMISSIONS.ANDROID.WRITE_EXTERNAL_STORAGE;
-      }
+const EnableLocationAndData = () => {
+  const [isLocationEnabled, setLocationEnabled] = useState(false);
 
-      let permissionResult = await check(permission);
-      if (permissionResult === RESULTS.BLOCKED) {
-        ToastAndroid.show(
-          'Permission Denied. Please enable the permission in your device settings.',
-          ToastAndroid.SHORT
-        );
-        return;
-      }
-      if (permissionResult === RESULTS.DENIED) {
-        permissionResult = await request(permission);
-      }
+  useEffect(() => {
+    checkLocationStatus();
 
-      if (permissionResult === RESULTS.GRANTED) {
-        ToastAndroid.show('Permission Grranted', ToastAndroid.SHORT);
-        // You can now access the external storage here
-        // For example:
-        // Your code to read media images, videos, audio, and PDFs here
-      } else {
-        ToastAndroid.show(
-          'Permission Denied. You can no longer access media images, videos, audio, and PDFs.',
-          ToastAndroid.SHORT
-        );
-      }
-    } catch (err) {
-      console.warn(err);
+    const watchId = Geolocation.watchPosition(
+      () => {
+        // Location services are enabled
+      },
+      (error) => {
+        if (error.code === 2) {
+          setLocationEnabled(false);
+          showAlert();
+        }
+      },
+      { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 }
+    );
+
+    return () => {
+      Geolocation.clearWatch(watchId);
+    };
+  }, []);
+
+  const checkLocationStatus = async () => {
+    const locationPermission = await Permissions.check('location');
+    setLocationEnabled(locationPermission === 'granted');
+  };
+
+  const requestLocationPermission = async () => {
+    const locationPermission = await Permissions.request('location');
+    setLocationEnabled(locationPermission === 'granted');
+  };
+
+  const openLocationSettings = () => {
+    if (Platform.OS === 'android') {
+      Linking.sendIntent('android.settings.LOCATION_SOURCE_SETTINGS');
+    } else {
+      Linking.openURL('app-settings:');
     }
   };
 
-  useEffect(() => {
-    requestReadMediaPermission();
-  }, []);
+  const showAlert = () => {
+    Alert.alert(
+      'Location Services',
+      'Location services are disabled. Please enable location services to proceed.',
+      [
+        {
+          text: 'Enable Location',
+          onPress: openLocationSettings,
+        },
+      ],
+      { cancelable: false }
+    );
+  };
 
   return (
-    <View>
-      <Button title="Request Media Permission" onPress={requestReadMediaPermission} />
+    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+      {isLocationEnabled ? (
+        <Text>Location is enabled.</Text>
+      ) : (
+        requestLocationPermission(),
+        <Text>Enable Location Services to proceed.</Text>
+      )}
     </View>
   );
 };
 
-export default App;
+export default EnableLocationAndData;

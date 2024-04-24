@@ -1,17 +1,20 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { StyleSheet, View, Text, Image, Pressable, ScrollView, Dimensions,PanResponder, Animated } from "react-native";
+import { StyleSheet, View, Text, Image, Pressable, ScrollView, Dimensions,PanResponder, Animated,Alert,Linking } from "react-native";
 import LocationForm from "../components/LocationForm";
 import ContinueSection from "../components/ContinueSection";
 import { useNavigation } from "@react-navigation/native";
 import { Border, Color, FontSize, FontFamily } from "../GlobalStyles";
 import MapView, { Marker } from 'react-native-maps';
 import GetLocation from 'react-native-get-location';
+import Geolocation from '@react-native-community/geolocation';
+import Permissions from 'react-native-permissions';
+
 
 const YourAddressLocation111N = ({ route }) => {
 
   
   const { parentItem, childItem, selectedDate,selectedTime,category } = route.params;
-  console.log(category,"cate")
+  // console.log(category,"cate")
   
   const windowHeight = Dimensions.get('window').height;
   const windowWidth = Dimensions.get('window').width;
@@ -19,6 +22,60 @@ const YourAddressLocation111N = ({ route }) => {
   const [currentLocation, setCurrentLocation] = useState(null);
   const [currentAddress, setCurrentAddress] = useState(null);
   const [showMap, setShowMap] = useState(false);
+  const [isLocationEnabled, setLocationEnabled] = useState(false);
+
+  useEffect(() => {
+    checkLocationStatus();
+
+    const watchId = Geolocation.watchPosition(
+      () => {
+        // Location services are enabled
+      },
+      (error) => {
+        if (error.code === 2) {
+          setLocationEnabled(false);
+          showAlert();
+        }
+      },
+      { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 }
+    );
+
+    return () => {
+      Geolocation.clearWatch(watchId);
+    };
+  }, []);
+
+  const checkLocationStatus = async () => {
+    const locationPermission = await Permissions.check('location');
+    setLocationEnabled(locationPermission === 'granted');
+  };
+
+  const requestLocationPermission = async () => {
+    const locationPermission = await Permissions.request('location');
+    setLocationEnabled(locationPermission === 'granted');
+  };
+
+  const openLocationSettings = () => {
+    if (Platform.OS === 'android') {
+      Linking.sendIntent('android.settings.LOCATION_SOURCE_SETTINGS');
+    } else {
+      Linking.openURL('app-settings:');
+    }
+  };
+
+  const showAlert = () => {
+    Alert.alert(
+      'Location Services',
+      'Location services are disabled. Please enable location services to proceed.',
+      [
+        {
+          text: 'Enable Location',
+          onPress: openLocationSettings,
+        },
+      ],
+      { cancelable: false }
+    );
+  };
    
 
   useEffect(() => {
@@ -28,7 +85,7 @@ const YourAddressLocation111N = ({ route }) => {
           enableHighAccuracy: true,
           timeout: 60000,
         });
-        console.log('Current location:', location);
+        // console.log('Current location:', location);
         setCurrentLocation({
           latitude: location.latitude,
           longitude: location.longitude,
@@ -44,7 +101,16 @@ const YourAddressLocation111N = ({ route }) => {
     };
 
     fetchLocation();
+
+    const interval = setInterval(() => {
+      fetchLocation();
+    }, 10000);
+
+    return () => clearInterval(interval);
+
   }, []);
+
+ 
 
   // Function to fetch address using latitude and longitude
   const fetchAddress = async (latitude, longitude) => {
@@ -64,7 +130,7 @@ const YourAddressLocation111N = ({ route }) => {
       return "Error fetching address";
     }
   };
-  console.log(selectedTime,"mymaptime");
+  // console.log(selectedTime,"mymaptime");
 
 
 

@@ -7,7 +7,7 @@ import { FontSize, FontFamily, Border, Color } from "../GlobalStyles";
 
 const ContinueSection = ({  parentItem, childItem, selectedDate, address, showMap, currentLocation,currentAddress,selectedTime ,category}) => {
   const navigation = useNavigation();
-  console.log(category)
+  // console.log(category)
 
   return (
     <View style={styles.rectangleParent}>
