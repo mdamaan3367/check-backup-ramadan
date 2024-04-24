@@ -1,96 +1,61 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { TextInput, View, StyleSheet } from 'react-native';
-import * as Animatable from 'react-native-animatable';
+import React, { useEffect } from 'react';
+import {
+  View,
+  Button,
+  Platform,
+  ToastAndroid,
+} from 'react-native';
+import { check, request, PERMISSIONS, RESULTS } from 'react-native-permissions';
 
-const PlaceholderAnimationTextInput = () => {
-  const [placeholder, setPlaceholder] = useState('');
-  const [typing, setTyping] = useState(false);
-  const [text, setText] = useState('');
-  const placeholderRef = useRef();
-  const animationIntervalRef = useRef(null);
-  const animationTimeoutRef = useRef(null);
+const App = () => {
+  const requestReadMediaPermission = async () => {
+    try {
+      let permission;
+      if (Platform.Version >= 30) {
+        permission = PERMISSIONS.ANDROID.READ_EXTERNAL_STORAGE;
+      } else if (Platform.Version >= 11 && Platform.Version < 30) {
+        permission = PERMISSIONS.ANDROID.READ_MEDIA_IMAGES;
+      } else {
+        permission = PERMISSIONS.ANDROID.WRITE_EXTERNAL_STORAGE;
+      }
+
+      let permissionResult = await check(permission);
+      if (permissionResult === RESULTS.BLOCKED) {
+        ToastAndroid.show(
+          'Permission Denied. Please enable the permission in your device settings.',
+          ToastAndroid.SHORT
+        );
+        return;
+      }
+      if (permissionResult === RESULTS.DENIED) {
+        permissionResult = await request(permission);
+      }
+
+      if (permissionResult === RESULTS.GRANTED) {
+        ToastAndroid.show('Permission Grranted', ToastAndroid.SHORT);
+        // You can now access the external storage here
+        // For example:
+        // Your code to read media images, videos, audio, and PDFs here
+      } else {
+        ToastAndroid.show(
+          'Permission Denied. You can no longer access media images, videos, audio, and PDFs.',
+          ToastAndroid.SHORT
+        );
+      }
+    } catch (err) {
+      console.warn(err);
+    }
+  };
 
   useEffect(() => {
-    if (!typing && !text) {
-      animatePlaceholder();
-    }
-
-    return () => {
-      clearInterval(animationIntervalRef.current);
-      clearTimeout(animationTimeoutRef.current);
-    };
-  }, [typing, text]);
-
-  const animatePlaceholder = () => {
-    const text = "Search what you need";
-    let i = 0;
-    animationIntervalRef.current = setInterval(() => {
-      setPlaceholder((prevPlaceholder) => prevPlaceholder + text[i]);
-      i++;
-      if (i === text.length) {
-        clearInterval(animationIntervalRef.current);
-        animationTimeoutRef.current = setTimeout(resetPlaceholder, 1000);
-      }
-    }, 100);
-  };
-
-  const resetPlaceholder = () => {
-    if (placeholderRef.current) {
-      const text = placeholderRef.current.props.text;
-      let i = text.length - 1;
-      animationIntervalRef.current = setInterval(() => {
-        setPlaceholder((prevPlaceholder) => prevPlaceholder.slice(0, -1));
-        i--;
-        if (i === -1) {
-          clearInterval(animationIntervalRef.current);
-          animatePlaceholder();
-        }
-      }, 100);
-    }
-  };
-
-  const onChangeText = (text) => {
-    setTyping(text.length > 0);
-    setText(text);
-  };
+    requestReadMediaPermission();
+  }, []);
 
   return (
-    <View style={styles.container}>
-      <Animatable.Text
-        ref={placeholderRef}
-        animation={typing || text ? null : "fadeIn"}
-        iterationCount="infinite"
-        duration={1500}
-        style={styles.placeholder}
-        text={placeholder}
-      />
-      <TextInput
-        placeholder={typing || text ? '' : placeholder}
-        placeholderTextColor="#D3D3D3"
-        maxLength={40}
-        style={styles.input}
-        onChangeText={onChangeText}
-        value={text}
-      />
+    <View>
+      <Button title="Request Media Permission" onPress={requestReadMediaPermission} />
     </View>
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#fff',
-  },
-  input: {
-    color: '#006daa',
-    padding: 10,
-    marginTop: '2%',
-  },
-  placeholder: {
-    color: '#D3D3D3',
-  },
-});
-
-export default PlaceholderAnimationTextInput;
+export default App;
