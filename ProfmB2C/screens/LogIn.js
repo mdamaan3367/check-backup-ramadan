@@ -46,7 +46,9 @@ const LogIn = ({route}) => {
 
   const generateFcmToken = async () => {
     const fcmToken2 = await messaging().getToken();
+    
     setFcmToken(fcmToken2);
+    console.log(fcmToken)
   };
   useEffect(() => {
     generateFcmToken();

@@ -1,74 +1,51 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, Button, Modal, Platform, Linking, Alert } from 'react-native';
-import Geolocation from '@react-native-community/geolocation';
-import Permissions from 'react-native-permissions';
+import React, { useState, useEffect } from 'react';
+import { View, Text } from 'react-native';
+import moment from 'moment';
 
-const EnableLocationAndData = () => {
-  const [isLocationEnabled, setLocationEnabled] = useState(false);
+const YourComponent = () => {
+  const defaultStartDate = '2024-04-30'; // Default start date
+  const defaultEndDate = '2024-06-25'; // Default end date
+  const daysArray = ["Saturday", "Thursday", "Tuesday"];
+  const [dayCounts, setDayCounts] = useState({});
+  const [cumulativeSum, setCumulativeSum] = useState(0);
 
   useEffect(() => {
-    checkLocationStatus();
+    const start = moment(defaultStartDate, 'YYYY-MM-DD');
+    const end = moment(defaultEndDate, 'YYYY-MM-DD');
 
-    const watchId = Geolocation.watchPosition(
-      () => {
-        // Location services are enabled
-      },
-      (error) => {
-        if (error.code === 2) {
-          setLocationEnabled(false);
-          showAlert();
-        }
-      },
-      { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 }
-    );
+    const counts = {};
+    let currentDate = start.clone();
+    let cumulative = 0;
 
-    return () => {
-      Geolocation.clearWatch(watchId);
-    };
+    while (currentDate.isSameOrBefore(end)) {
+      const dayOfWeek = currentDate.format('dddd');
+      if (daysArray.includes(dayOfWeek)) {
+        counts[dayOfWeek] = (counts[dayOfWeek] || 0) + 1;
+        cumulative++;
+      }
+      currentDate.add(1, 'days');
+    }
+
+    setDayCounts(counts);
+    setCumulativeSum(cumulative);
   }, []);
 
-  const checkLocationStatus = async () => {
-    const locationPermission = await Permissions.check('location');
-    setLocationEnabled(locationPermission === 'granted');
-  };
-
-  const requestLocationPermission = async () => {
-    const locationPermission = await Permissions.request('location');
-    setLocationEnabled(locationPermission === 'granted');
-  };
-
-  const openLocationSettings = () => {
-    if (Platform.OS === 'android') {
-      Linking.sendIntent('android.settings.LOCATION_SOURCE_SETTINGS');
-    } else {
-      Linking.openURL('app-settings:');
-    }
-  };
-
-  const showAlert = () => {
-    Alert.alert(
-      'Location Services',
-      'Location services are disabled. Please enable location services to proceed.',
-      [
-        {
-          text: 'Enable Location',
-          onPress: openLocationSettings,
-        },
-      ],
-      { cancelable: false }
-    );
-  };
-
   return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      {isLocationEnabled ? (
-        <Text>Location is enabled.</Text>
-      ) : (
-        requestLocationPermission(),
-        <Text>Enable Location Services to proceed.</Text>
-      )}
+    <View>
+      {/* Display the counts of each day */}
+      <View>
+        <Text>Day Counts:</Text>
+        {Object.entries(dayCounts).map(([day, count]) => (
+          <Text key={day}>{`${day}: ${count}`}</Text>
+        ))}
+      </View>
+
+      {/* Display the cumulative sum */}
+      <View>
+        <Text>Cumulative Sum: {cumulativeSum}</Text>
+      </View>
     </View>
   );
 };
 
-export default EnableLocationAndData;
+export default YourComponent;

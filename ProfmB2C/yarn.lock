@@ -7873,11 +7873,6 @@ react-is@^17.0.1:
   resolved "https://registry.npmjs.org/react-is/-/react-is-17.0.2.tgz"
   integrity sha512-w2GsyukL62IJnlaff/nRegPQR94C/XXamvMWmSHRJ4y7Ts/4ocGRmTHvOs8PSE6pB3dWOrD/nueuU5sduBsQ4w==
 
-react-native-android-intent@^0.1.0:
-  version "0.1.0"
-  resolved "https://registry.npmjs.org/react-native-android-intent/-/react-native-android-intent-0.1.0.tgz"
-  integrity sha512-2Hsx58vkOBSxT4ZZYC7ER+e5rpAMG0+1AUtEx8/DFTcEL0wFJV0nie4NAVSHOje5o/HNeIw1a42w+c8jgChhsw==
-
 react-native-animatable@^1.4.0:
   version "1.4.0"
   resolved "https://registry.npmjs.org/react-native-animatable/-/react-native-animatable-1.4.0.tgz"

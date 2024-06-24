@@ -341,13 +341,13 @@ const Home = () => {
 
       departments.forEach(dept => {
         const timePeriods = dept.serviceTimePeriods.split(',');
-        if (timePeriods.includes('Daily')) {
+        if (timePeriods.includes('One Time Services')) {
           daily.push(dept);
         }
-        if (timePeriods.includes('Monthly')) {
+        if (timePeriods.includes('Monthly Service')) {
           monthly.push(dept);
         }
-        if (timePeriods.includes('Yearly')) {
+        if (timePeriods.includes('Yearly  Service')) {
           yearly.push(dept);
         }
       });
@@ -382,7 +382,7 @@ console.log(category)
         setShouldRefetchData(true);
         setCategory('D') // Set the flag to trigger data refetch
         break;
-      case 3:
+      case 2:
         setExpanded2(!expanded2);
         console.log("month time");
         setShouldRefetchData(true);
@@ -404,7 +404,7 @@ console.log(category)
     switch (itemId) {
       case 1:
         return expanded;
-      case 3:
+      case 2:
         return expanded2;
       case 4:
         return expanded3;
@@ -707,7 +707,7 @@ console.log(category)
     setRefreshing(true);
     fetchData();
   };
-
+console.log(dataServices)
   return (
     <>
       <ScrollView
@@ -818,15 +818,15 @@ console.log(category)
       {/* Additional elements to be shown when expanded is true */}
       {isExpanded(item.id) && (
         <FlatList
-          data={item.id === 1 ? dailyDepartments : item.id === 3 ? monthlyDepartments : yearlyDepartments}
+          data={item.id === 1 ? dailyDepartments : item.id === 2 ? monthlyDepartments : yearlyDepartments}
           renderItem={({ item: childItem }) => (
-            <View style={{ flexDirection: "column", flex: 1 }}>
+            <View style={{ flexDirection: "column", flex: 1,flexWrap:"wrap" }}>
             
               <TouchableOpacity onPress={() => handleNavigation(childItem.id, childItem, item)}>
 
                 <View style={styles.customView2}>
                   <Image
-                    source={childItem.imageSource}
+                    source={{ uri: childItem.fullImagePath }}
                     style={styles.imageD}
                   />
                   <Text style={styles.textD}>{childItem.nameEng} </Text>
@@ -1311,10 +1311,12 @@ const styles = StyleSheet.create({
   imageD: {
     width: 20,
     height: 20,
-    marginRight: 10,
+    marginLeft: 10,
+    marginRight:2
+   
   },
   customView2: {
-    width: 155, // Two views per row
+    width: 160, // Two views per row
     backgroundColor: 'white',
     marginBottom: 5,
     borderRadius: 5,
@@ -1323,13 +1325,13 @@ const styles = StyleSheet.create({
     borderColor: '#d7e1e5',
     borderWidth: 1,
     marginTop:8,
-    marginLeft:0,
+    marginLeft:2,
     height: 50,
     alignSelf:"flex-start"
     
   },
   customView3: {
-    width: 163, // Two views per row
+    width: 160, // Two views per row
     backgroundColor: 'white',
     padding: 10,
     marginBottom: 5,
@@ -1342,8 +1344,11 @@ const styles = StyleSheet.create({
     height: 50,
   },
   textD: {
-    fontSize: 12.5,
+    textAlign:"left",
+    fontSize: 10.5,
     color: 'black',
+    flexWrap: 'wrap',
+    width: '75%',
   },
   customView: {
     backgroundColor: 'white',

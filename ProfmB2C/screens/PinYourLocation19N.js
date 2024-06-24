@@ -26,6 +26,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { selectUser } from '../redux/userSlice';
 import { updateSelectedDateTimeArray, updatePriceValue, updateDay2, updateMonth2, updateYear2 } from '../redux/contractSlice';
 import { Picker } from '@react-native-community/picker';
+import moment from 'moment';
 
 
 
@@ -79,6 +80,8 @@ const PinYourLocation19N = ({route}) => {
   const [selectedTime2, setSelectedTime2] = useState('04:00 AM To 11:00 PM');
   const [selectedDateTimeArray, setSelectedDateTimeArray] = useState([]);
   const [isAnyButtonSelected, setIsAnyButtonSelected] = useState(false);
+  const [dayCounts, setDayCounts] = useState({});
+  const [cumulativeSum, setCumulativeSum] = useState(0);
 
   // const handleButtonPress2 = (time) => {
   //   console.log('Selected Day:', selectedDays[selectedDays.length - 1]);
@@ -259,7 +262,7 @@ console.log(category)
   const fetchPrice = async (categoryPass) => {
     console.log(categoryPass,"testing")
     try {
-      const url = `https://hvserp.com/FomMobB2C/api/FomCustomerContract/getDefaultPaymentPrices?type=${categoryPass}`;
+      const url = `https://hvserp.com/FomMobB2C/api/FomCustomerContract/getDefaultPaymentPrices?type=Day`;
 
       const PriceRcvd = await makeApiRequest(url, userData1.token, 'GET');
       console.log(PriceRcvd);
@@ -272,7 +275,7 @@ console.log(category)
   }
   useEffect(() => {
     const categoryPass = category === 'M' ? 'Month': 'Year';
-    console.log(categoryPass)
+   // console.log(categoryPass)
     // Call fetchPrice when the component mounts
     fetchPrice(categoryPass);
   }, []); 
@@ -291,11 +294,11 @@ console.log(category)
   
   useEffect(() => {
     if (price && price.length > 0 && price[0].value !== null && price[0].value !== undefined) {
-      const totalPrice = selectedDays.length * parseFloat(price[0].value);
+      const totalPrice = cumulativeSum * parseFloat(price[0].value);
       setPriceValue(totalPrice);
     }
-  }, [price, selectedDays]);
-console.log(priceValue);
+  }, [price, cumulativeSum]);
+//console.log(priceValue);
 
 
   // Dispatch actions to update data in the store when component mounts  
@@ -304,7 +307,31 @@ console.log(priceValue);
   dispatch(updateDay2(day2));
   dispatch(updateMonth2(month2));
   dispatch(updateYear2(year2));
+//console.log(updateDay2,"dat")
+  const defaultStartDate = `${year}-${month}-${day}`; // Default start date
+  const defaultEndDate =  `${year2}-${month2}-${day2}`; // Default end date
+  const daysArray =selectedDays;
 
+  useEffect(() => {
+    const start = moment(defaultStartDate, 'YYYY-MM-DD');
+    const end = moment(defaultEndDate, 'YYYY-MM-DD');
+
+    const counts = {};
+    let currentDate = start.clone();
+    let cumulative = 0;
+
+    while (currentDate.isSameOrBefore(end)) {
+      const dayOfWeek = currentDate.format('dddd');
+      if (daysArray.includes(dayOfWeek)) {
+        counts[dayOfWeek] = (counts[dayOfWeek] || 0) + 1;
+        cumulative++;
+      }
+      currentDate.add(1, 'days');
+    }
+
+    setDayCounts(counts);
+    setCumulativeSum(cumulative);
+  }, [selectedDays]);
   
 
   return (

@@ -112,7 +112,7 @@ console.log(time24Format); // Output: "12:33"
     };
   });
 
-console.log(tableRows)
+console.log(category,"category")
   const requestData2 ={
     "customerContractDto": {    
       "custCode": userData1.userName,    
@@ -126,7 +126,8 @@ console.log(tableRows)
       "tableRows": tableRows
     },
     "geoLatitude": lat,
-    "geoLongitude": long
+    "geoLongitude": long,
+    "SchType":category,
   }
 
 

@@ -156,23 +156,23 @@ const handleActivityPress = (activityId) => {
               <View style={{marginTop:15,margin:5,flexDirection:"row"}}>
               {cat === 'D' && (
   <Text style={{color:"black",fontSize:15}}>
-    {childItem.serviceShortDescAr}
+    {childItem.deptCode}
   </Text>
 )}
 {cat === 'M' && (
   <Text style={{color:"black",fontSize:15}}>
-    Monthly Subscription </Text>
+    Monthly Subscription</Text>
 )}
 {cat === 'Y' && (
   <Text style={{color:"black",fontSize:15}}>
-    One Year Subscription </Text>
+   Yearly subscription</Text>
 )}
-                <Text style={{color:"gray",fontSize:13,alignSelf:"center"}}>({item.actName})</Text>
-                <Text style={{color:"gray",fontSize:12,alignSelf:"center",marginLeft:"1.5%"}}>⭐ 4.9 (80 reviews)</Text>
+                <Text style={{color:"gray",fontSize:13,alignSelf:"center"}}> ({item.actName})</Text>
+                <Text style={{color:"gray",fontSize:10,alignSelf:"center",marginLeft:"1.5%"}}>⭐4.9 (80 reviews)</Text>
               </View>
               <View style={{flexDirection:"row",margin:5}}>
               <Image
-            style={{height:12,weight:12,alignSelf:"center"}}
+            style={{height:16,width:16}}
             resizeMode="cover"
             source={require('../assets/user3.png')}
           />
@@ -181,7 +181,7 @@ const handleActivityPress = (activityId) => {
               </View>
               <View style={{flexDirection:"row",margin:5}}>
               <Image
-           style={{height:13.5,weight:12,alignSelf:"center"}}
+           style={{height:16,width:16}}
             resizeMode="cover"
             source={require('../assets/clock2.png')}
           />
@@ -193,7 +193,7 @@ const handleActivityPress = (activityId) => {
               </TouchableOpacity>
               <View style={{flex:1,flexDirection:"row",margin:5}}>
                 <Text style={{color:"red",fontSize:18,fontWeight:"bold"}}>  {cat === 'D' && childItem.offerPrice + " SAR"} </Text>   
-                <Text style={{color:"gray",alignSelf:"center",textDecorationLine: 'line-through',marginLeft:"1%"}}> {cat === 'D' && childItem.offerPrice * 1.1 + " SAR"}</Text>
+                <Text style={{color:"gray",alignSelf:"center",textDecorationLine: 'line-through',marginLeft:"1%"}}> {cat === 'D' && childItem.offerPrice * 1.01 + " SAR"}</Text>
                 <Pressable
   style={[styles.nextWrapper, styles.wrapperFlexBox]}
   onPress={() => navigation.navigate('PinYourLocation19N', { parentItem: item, childItem: childItem ,category:cat})}

@@ -260,20 +260,20 @@ const styles = StyleSheet.create({
         height: 24,
       },
       parent: {
-        top: 32,
+        top: "15%",
         left: "4%",
         position: "absolute",
       },
       serviceMaintenanceWorkerRepIcon: {
         top: -1,
-        left: 205,
+        left: "60%",
         width: 154,
         height: 154,
         display: "none",
         position: "absolute",
       },
       frameItem: {
-        left: 204,
+        left: "61%",
         width: 140,
         height: 160,
         top: 0,
